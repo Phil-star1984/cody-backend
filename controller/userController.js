@@ -19,3 +19,22 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ message: "User sucessfully deleted!", user });
 });
+
+export const updateUser = asyncHandler(async (req, res, next) => {
+  const { firstName, lastName, email, password } = req.body;
+  const { id } = req.params;
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    {
+      firstName,
+      lastName,
+      email,
+      password,
+    },
+    { new: true }
+  );
+
+  if (!user) throw new ErrorResponse("No user to update", 404);
+  res.status(200).json({ message: "User sucessfully updated!" });
+});

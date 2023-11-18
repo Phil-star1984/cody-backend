@@ -6,14 +6,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 /* import errorHandler from "../middlewares/errorHandler.js"; */
 
-//Get User
-export const getUser = asyncHandler(async (req, res, next) => {
-  console.log(req.uid);
-
-  const user = await User.findById(req.uid, { password: 0 });
-  res.json(user);
-});
-
 //User signUp
 export const signUp = asyncHandler(async (req, res, next) => {
   /* const { id } = req.params; */
@@ -36,4 +28,41 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
   const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SECRET);
   res.status(201).send({ status: "success" });
+});
+
+//User signIn
+export const singIn = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) throw new ErrorResponse("User does not exist", 404);
+
+  const match = bcrypt.compare(password, user.password);
+  if (!match) throw new ErrorResponse("Wrong Password", 401);
+
+  const token = jwt.sign({ uid: user._id }, process.env.JWT_SECRET);
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+    maxAge: 1800000,
+  });
+
+  res.status(200).send();
+});
+
+//Get User
+export const getUser = asyncHandler(async (req, res, next) => {
+  console.log(req.uid);
+  const user = await User.findById(req.uid, { password: 0 });
+  res.json(user);
+});
+
+export const logout = asyncHandler(async (req, res, next) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "None",
+    secure: true,
+  });
+  res.status(200).send({ status: "success" });
 });
