@@ -3,3 +3,5 @@ export default function errorHandler(error, req, res, next) {
   const message = error.message || "Server Error";
   res.status(statusCode).json({ message: message });
 }
+
+//delete
