@@ -2,6 +2,13 @@ import ErrorResponse from "../utils/ErrorResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import User from "../models/User.js";
 
+//Get All Users
+export const getAllUsers = asyncHandler(async (req, res, next) => {
+  const allUsers = await User.find();
+  if (!allUsers) throw new ErrorResponse("No users in Database", 404);
+  res.send(allUsers);
+});
+
 //Get User
 export const getUser = asyncHandler(async (req, res, next) => {
   const { id } = req.params;

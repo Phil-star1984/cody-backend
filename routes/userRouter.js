@@ -4,9 +4,12 @@ import * as userController from "../controller/userController.js";
 const userRouter = express.Router();
 
 userRouter
+  .route("/").get(userController.getAllUsers)
+
+userRouter
   .route("/:id")
   .get(userController.getUser)
   .delete(userController.deleteUser)
-  .post(userController.updateUser)
+  .post(userController.updateUser);
 
 export default userRouter;
