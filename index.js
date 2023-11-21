@@ -5,6 +5,7 @@ import cors from "cors";
 
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
+import chatRouter from "./routes/chatRouter.js";
 import "./db/mongoDB.js";
 
 const PORT = process.env.PORT;
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
+app.use("/chat", chatRouter);
 
 app.listen(PORT, (req, res) => {
   console.log(`Example App listening on Port: ${PORT}`);
