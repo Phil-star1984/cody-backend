@@ -7,7 +7,8 @@ import Chat from "../models/UserChat.js";
 const endpointUrl = "https://api.openai.com/v1/chat/completions";
 
 export const chatCompletion = asyncHandler(async (req, res, next) => {
-  const { user_input } = req.body;
+  const { user_input, userId } = req.body;
+
 
   const options = {
     method: "POST",
@@ -30,7 +31,16 @@ export const chatCompletion = asyncHandler(async (req, res, next) => {
   res.send(data.choices[0].message.content);
 
   const saveChat = await Chat.create({
+    author: userId,
     userInput: user_input,
     chatgptResponse: data.choices[0].message.content,
   });
+});
+
+export const getAllChats = asyncHandler(async (req, res, next) => {
+  const allChats = await Chat.find().populate("author");
+
+  if (!allChats) throw new ErrorResponse("There are no Chats", 404);
+
+  res.send(allChats);
 });
