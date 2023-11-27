@@ -27,20 +27,20 @@ export const signUp = asyncHandler(async (req, res, next) => {
   });
 
   const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SECRET);
-  res.status(201).send({ status: "success" });
+  res.status(201).send({ token });
 });
 
 //User signIn
-export const singIn = asyncHandler(async (req, res, next) => {
+export const signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).select("+password");
-  if (!user) throw new ErrorResponse("User does not exist", 404);
+  const existingUser = await User.findOne({ email }).select("+password");
+  if (!existingUser) throw new ErrorResponse("User does not exist", 404);
 
-  const match = bcrypt.compare(password, user.password);
+  const match = bcrypt.compare(password, existingUser.password);
   if (!match) throw new ErrorResponse("Wrong Password", 401);
 
-  const token = jwt.sign({ uid: user._id }, process.env.JWT_SECRET);
+  const token = jwt.sign({ uid: existingUser._id }, process.env.JWT_SECRET);
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "None",
@@ -48,7 +48,7 @@ export const singIn = asyncHandler(async (req, res, next) => {
     maxAge: 1800000,
   });
 
-  res.status(200).send();
+  res.status(200).send({ token });
 });
 
 //Get User
