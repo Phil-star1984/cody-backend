@@ -3,11 +3,11 @@ import ErrorResponse from "../utils/ErrorResponse.js";
 import jwt from "jsonwebtoken";
 
 const verifyToken = asyncHandler(async (req, res, next) => {
-  const { authorization } = req.headers;
+  const token = req.cookies.token;
 
-  if (!authorization) throw new ErrorResponse("Please login", 401);
+  if (!token) throw new ErrorResponse("Please login", 401);
 
-  const decoded = jwt.verify(authorization, process.env.JWT_SECRET);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
   req.uid = decoded.uid;
   next();
 });
