@@ -27,7 +27,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
   });
 
   const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SECRET);
-  res.status(201).send({ token });
+  res.status(201).send({ status: "success" });
 });
 
 //User signIn
@@ -48,7 +48,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
     maxAge: 1800000,
   });
 
-  res.status(200).send({ token });
+  res.status(200).send({ status: "success" });
 });
 
 //Get User
