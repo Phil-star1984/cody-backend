@@ -9,7 +9,6 @@ const endpointUrl = "https://api.openai.com/v1/chat/completions";
 export const chatCompletion = asyncHandler(async (req, res, next) => {
   const { user_input, userId } = req.body;
 
-
   const options = {
     method: "POST",
     headers: {
@@ -43,4 +42,15 @@ export const getAllChats = asyncHandler(async (req, res, next) => {
   if (!allChats) throw new ErrorResponse("There are no Chats", 404);
 
   res.send(allChats);
+});
+
+export const getUserSpecificChat = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const result = await Chat.find({ author: { _id: id } });
+
+  if (!result)
+    throw new ErrorResponse(`There are no chats from user with ID:${id}`);
+
+  res.send(result);
 });
