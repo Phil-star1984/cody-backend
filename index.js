@@ -14,7 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://cody-app.netlify.app/"],
+    origin: ["http://localhost:5173", "https://cody-app.netlify.app"],
     credentials: true,
   })
 );
